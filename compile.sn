@@ -1,0 +1,3 @@
+echo ninja -C build
+ninja -C build 
+echo ===================== completed =====================
