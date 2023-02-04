@@ -87,10 +87,10 @@ int graphAdjListPrintEdge(graphAdjList_t* graph)
     {
       adjListUnit_t* unit = graph->adjList_[i];
       printf("%2d -> ", i);
-      while(unit != (void *)0)
+      while (unit != (void*)0)
       {
         printf("[%2d, %2d] ", unit->dst_, unit->weight_);
-        if(unit->next_ != (void *)0)
+        if (unit->next_ != (void*)0)
         {
           printf("-> ");
         }
