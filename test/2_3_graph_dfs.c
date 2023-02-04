@@ -8,54 +8,41 @@
 #include "graph_adj_mat.h"
 #include "queue.h"
 
-const int test_result[5] = { 0, 1, 2, 4, 3 };
+const int test_result[5] = { 0, 1, 4, 3, 2 };
 
-void traverse_bfs(graphAdjMatrix_t* graph, int index, int* result)
+void traverse_dfs_help(graphAdjMatrix_t* graph, int index, int* result, int* i_result, bool* visited)
 {
-  // using integer
-  queue_t* queue = createQueue(sizeof(int), 20);
-
-  // record you whether visited
-  bool* visited = malloc(graph->num_ * sizeof(bool));
-  memset(visited, 0, graph->num_ * sizeof(bool));
-
-  int ret;
-  ret = queue->offer(queue, &index);
-  assert(0 == ret);
-
-  int i_now = index;
-  int i_result = 0;
-  printf("\nBFS: ");
-  while (true)
+  if (visited[index])
   {
-    if (queue->isEmpty(queue))
-      break;
-    ret = queue->poll(queue, &i_now);
-    assert(0 == ret);
-    if (visited[i_now])
-      continue;
-    assert(i_now < graph->num_);
-    visited[i_now] = true;
-
-    //! main logic, BFS print out
-    printf("%d, ", i_now);
-    result[i_result++] = i_now;
-
-    for (int ni = 0; ni < graph->num_; ni++)
-    {
-      int weight = graph->adjMatrix_[i_now][ni].weight;
-      if (weight == INFINITE_WEIGHT)
-        continue;
-
-      ret = queue->offer(queue, &ni);
-      assert(0 == ret);
-    }
+    return;
   }
+  visited[index] = true;
 
+  // main logic
+  printf("%d, ", index);
+  result[(*i_result)++] = index;
+
+  // find other neighbors
+  for (int ni = 0; ni < graph->num_; ni++)
+  {
+    int weight = graph->adjMatrix_[index][ni].weight;
+    if (weight == INFINITE_WEIGHT)
+    {
+      continue;
+    }
+    traverse_dfs_help(graph, ni, result, i_result, visited);
+  }
+}
+
+void traverse_dfs(graphAdjMatrix_t* graph, int index, int* result)
+{
+  printf("\nDFS: ");
+  bool* visited = malloc(graph->num_ * sizeof(bool));
+  int i_result = 0;
+  traverse_dfs_help(graph, index, result, &i_result, visited);
   printf("\n");
 
   free(visited);
-  free(queue);
 }
 
 int main()
@@ -100,7 +87,7 @@ int main()
 
   int* result = malloc(graph->num_ * sizeof(int));
   memset(result, 0, graph->num_ * sizeof(int));
-  traverse_bfs(graph, 0, result);
+  traverse_dfs(graph, 0, result);
   for (int i = 0; i < graph->num_; i++)
   {
     assert(result[i] == test_result[i]);
