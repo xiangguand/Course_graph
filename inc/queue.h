@@ -18,6 +18,6 @@ typedef struct _queue_t
 } queue_t;
 
 queue_t *createQueue(uint32_t data_bytes, uint32_t queue_length);
-
+void freeQueue(queue_t* queue);
 
 #endif /* QUEUE_H_ */
